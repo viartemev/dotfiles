@@ -1,0 +1,3 @@
+brew install tree
+brew install ngrep
+brew install wget
