@@ -1,0 +1,104 @@
+# Create a new directory and enter it
+function mkd() {
+	mkdir -p "$@" && cd "$_";
+}
+
+# `o` with no arguments opens the current directory, otherwise opens the given
+# location
+function o() {
+	if [ $# -eq 0 ]; then
+		open .;
+	else
+		open "$@";
+	fi;
+}
+
+# Fuzzy find file/dir
+ff() {  find . -type f -iname "$1";}
+fff() { find . -type f -iname "*$1*";}
+fd() {  find . -type d -iname "$1";}
+fdf() { find . -type d -iname "*$1*";}
+
+# Extract many types of compress files
+# Source: http://nparikh.org/notes/zshrc.txt
+extract() {
+  if [ -f "$1" ]; then
+    case "$1" in
+      *.tar.bz2)  tar -jxvf "$1"            ;;
+      *.tar.gz)   tar -zxvf "$1"            ;;
+      *.bz2)    bunzip2 "$1"              ;;
+      *.dmg)    hdiutil mount "$1"          ;;
+      *.gz)     gunzip "$1"               ;;
+      *.tar)    tar -xvf "$1"             ;;
+      *.tbz2)   tar -jxvf "$1"            ;;
+      *.tgz)    tar -zxvf "$1"            ;;
+      *.zip)    unzip "$1"              ;;
+      *.ZIP)    unzip "$1"              ;;
+      *.pax)    cat "$1" | pax -r           ;;
+      *.pax.Z)  uncompress "$1" --stdout | pax -r   ;;
+      *.Z)    uncompress "$1"             ;;
+      *)      echo "'$1' cannot be extracted/mounted via extract()" ;;
+    esac
+  else
+    echo "'$1' is not a valid file to extract"
+  fi
+}
+
+# Syntax-highlight JSON strings or files
+# Usage: `json '{"foo":42}'` or `echo '{"foo":42}' | json`
+function json() {
+	if [ -t 0 ]; then # argument
+		python -mjson.tool <<< "$*" | pygmentize -l javascript;
+	else # pipe
+		python -mjson.tool | pygmentize -l javascript;
+	fi;
+}
+
+# UTF-8-encode a string of Unicode symbols
+function escape() {
+	printf "\\\x%s" $(printf "$@" | xxd -p -c1 -u);
+	# print a newline unless we’re piping the output to another program
+	if [ -t 1 ]; then
+		echo ""; # newline
+	fi;
+}
+
+# Decode \x{ABCD}-style Unicode escape sequences
+function unidecode() {
+	perl -e "binmode(STDOUT, ':utf8'); print \"$@\"";
+	# print a newline unless we’re piping the output to another program
+	if [ -t 1 ]; then
+		echo ""; # newline
+	fi;
+}
+
+# `a` with no arguments opens the current directory in Atom Editor, otherwise
+# opens the given location
+function a() {
+	if [ $# -eq 0 ]; then
+		atom .;
+	else
+		atom "$@";
+	fi;
+}
+
+# `v` with no arguments opens the current directory in Vim, otherwise opens the
+# given location
+function v() {
+	if [ $# -eq 0 ]; then
+		vim .;
+	else
+		vim "$@";
+	fi;
+}
+
+# Get named var (usage: get "VAR_NAME")
+get() {
+  echo "${!1}"
+}
+
+# Weather
+weather() {
+  local CITY=${1:-Moscow}
+  curl -4 "wttr.in/$CITY"
+}
