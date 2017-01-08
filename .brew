@@ -1,4 +1,9 @@
+#Brew
 brew install tree
 brew install ngrep
 brew install wget
 brew install calc
+brew install python
+
+#Python
+pip install Pygments
