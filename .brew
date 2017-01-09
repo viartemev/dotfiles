@@ -4,6 +4,7 @@ brew install ngrep
 brew install wget
 brew install calc
 brew install python
+brew install diff-so-fancy
 
 #Python
 pip install Pygments
