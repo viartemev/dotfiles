@@ -1,9 +1,9 @@
 export PATH="/usr/local/bin:$PATH"
 
-export PS1="\u@\W ⌗ "
-
 source ~/.aliases
 source ~/.functions
+source ~/.bash_prompt
+source ~/.exports
 
 # Add tab completion for many Bash commands
 #if [ -f $(brew --prefix)/etc/bash_completion ]; then
@@ -19,4 +19,3 @@ fi
 
 # Add tab completion for SSH hostnames based on ~/.ssh/config, ignoring wildcards
 [ -e "$HOME/.ssh/config" ] && complete -o "default" -o "nospace" -W "$(grep "^Host" ~/.ssh/config | grep -v "[?*]" | cut -d " " -f2- | tr ' ' '\n')" scp sftp ssh;
-
