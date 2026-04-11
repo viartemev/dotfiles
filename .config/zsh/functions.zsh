@@ -163,3 +163,59 @@ gbr() {
     branch=${branch#origin/}
     git switch "$branch" 2>/dev/null || git checkout "$branch"
 }
+
+# Выбрать commit через fzf и показать его
+# Полезно для быстрого просмотра истории с preview.
+glogf() {
+    emulate -L zsh
+
+    command -v git >/dev/null 2>&1 || return 1
+    command -v fzf >/dev/null 2>&1 || { echo 'fzf is required'; return 1; }
+    git rev-parse --is-inside-work-tree >/dev/null 2>&1 || { echo 'not a git repository'; return 1; }
+
+    local selection commit
+    selection=$(git log --graph --color=always --date=short \
+        --pretty=format:'%C(auto)%h %C(blue)%ad%C(reset) %C(yellow)%d%C(reset) %s %C(black)%C(bold)- %an' | \
+        fzf --ansi --no-sort --reverse --preview 'commit=$(echo {} | grep -o "[a-f0-9]\{7,\}" | head -1); [ -n "$commit" ] && git show --color=always --stat "$commit"') || return
+
+    commit=$(echo "$selection" | grep -o '[a-f0-9]\{7,\}' | head -1) || return
+    [[ -n "$commit" ]] && git show --stat "$commit"
+}
+
+# Выбрать commit и создать fixup commit для autosquash workflow
+gfixup() {
+    emulate -L zsh
+
+    command -v git >/dev/null 2>&1 || return 1
+    command -v fzf >/dev/null 2>&1 || { echo 'fzf is required'; return 1; }
+    git rev-parse --is-inside-work-tree >/dev/null 2>&1 || { echo 'not a git repository'; return 1; }
+
+    local selection commit
+    selection=$(git log --color=always --pretty=format:'%C(auto)%h %s %C(black)%C(bold)- %an, %ar' | \
+        fzf --ansi --reverse --preview 'commit=$(echo {} | awk "{print \$1}"); [ -n "$commit" ] && git show --color=always --stat "$commit"') || return
+
+    commit=$(echo "$selection" | awk '{print $1}') || return
+    [[ -n "$commit" ]] && git commit --fixup "$commit"
+}
+
+# Выбрать измененный файл через fzf и открыть его в editor
+gcf() {
+    emulate -L zsh
+
+    command -v git >/dev/null 2>&1 || return 1
+    command -v fzf >/dev/null 2>&1 || { echo 'fzf is required'; return 1; }
+    git rev-parse --is-inside-work-tree >/dev/null 2>&1 || { echo 'not a git repository'; return 1; }
+
+    local selection file preview_cmd
+
+    if command -v bat >/dev/null 2>&1; then
+        preview_cmd='file=$(echo {} | cut -c4- | awk -F" -> " "{print \$NF}"); if git diff --quiet -- "$file" 2>/dev/null && git diff --cached --quiet -- "$file" 2>/dev/null; then bat --style=plain --color=always --line-range=:200 "$file"; else git diff --color=always -- "$file"; git diff --cached --color=always -- "$file"; fi'
+    else
+        preview_cmd='file=$(echo {} | cut -c4- | awk -F" -> " "{print \$NF}"); git diff --color=always -- "$file"; git diff --cached --color=always -- "$file"; [ -f "$file" ] && sed -n "1,200p" "$file"'
+    fi
+
+    selection=$(git status --short | fzf --reverse --preview "$preview_cmd") || return
+    file=$(echo "$selection" | cut -c4- | awk -F' -> ' '{print $NF}')
+
+    [[ -n "$file" ]] && "$EDITOR" "$file"
+}

@@ -9,7 +9,10 @@
 ### Shell UX
 - быстрый `compinit` с кэшем
 - модульная структура конфига
-- `starship` prompt
+- аккуратный `starship` prompt:
+  - короткая директория
+  - `git branch`
+  - `git status`
 - `zsh-autosuggestions`
 - `zsh-syntax-highlighting`
 - `zoxide` + привычный `cd='z'`
@@ -49,6 +52,9 @@
 | `cdf` | выбрать директорию через `fzf` и перейти в неё |
 | `rgv <query>` | найти в проекте через `rg` и открыть результат в редакторе |
 | `gbr` | выбрать git-ветку через `fzf` |
+| `glogf` | выбрать commit через `fzf` и показать его |
+| `gfixup` | выбрать commit и создать `fixup!` commit |
+| `gcf` | выбрать изменённый файл через `fzf` и открыть в редакторе |
 | `lg` | открыть `lazygit` |
 | `tl <cmd>` | быстрые примеры по команде |
 | `space` | показать, что занимает место на диске (`dust`) |
@@ -250,6 +256,24 @@ rgv "NewServer"
 
 ```bash
 gbr
+```
+
+### Выбрать commit и посмотреть его
+
+```bash
+glogf
+```
+
+### Сделать fixup commit для autosquash workflow
+
+```bash
+gfixup
+```
+
+### Открыть изменённый файл из git status
+
+```bash
+gcf
 ```
 
 ### Посмотреть красивые diff
