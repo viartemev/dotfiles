@@ -104,7 +104,8 @@ vf() {
     "$EDITOR" "$file"
 }
 
-# Выбрать директорию через fd + fzf и перейти в нее
+# Выбрать директорию через fd + fzf и перейти в нее.
+# По умолчанию поиск быстрый и неглубокий, чтобы не сканировать весь диск.
 cdf() {
     emulate -L zsh
 
@@ -112,9 +113,58 @@ cdf() {
 
     local dir_cmd dir
     if command -v fd >/dev/null 2>&1; then
-        dir_cmd=(fd --type d --hidden --follow --exclude .git)
+        dir_cmd=(fd --type d --hidden --follow --max-depth 3 \
+            --exclude .git \
+            --exclude node_modules \
+            --exclude dist \
+            --exclude build \
+            --exclude target \
+            --exclude .next \
+            --exclude vendor \
+            --exclude .venv)
     else
-        dir_cmd=(find . -type d -not -path '*/.git/*')
+        dir_cmd=(find . -maxdepth 3 -type d \
+            -not -path '*/.git/*' \
+            -not -path '*/node_modules/*' \
+            -not -path '*/dist/*' \
+            -not -path '*/build/*' \
+            -not -path '*/target/*' \
+            -not -path '*/.next/*' \
+            -not -path '*/vendor/*' \
+            -not -path '*/.venv/*')
+    fi
+
+    dir=$("${dir_cmd[@]}" | fzf) || return
+    builtin cd -- "$dir"
+}
+
+# Полный глубокий поиск директорий, если реально нужно пройти всё дерево.
+cdfa() {
+    emulate -L zsh
+
+    command -v fzf >/dev/null 2>&1 || { echo 'fzf is required'; return 1; }
+
+    local dir_cmd dir
+    if command -v fd >/dev/null 2>&1; then
+        dir_cmd=(fd --type d --hidden --follow \
+            --exclude .git \
+            --exclude node_modules \
+            --exclude dist \
+            --exclude build \
+            --exclude target \
+            --exclude .next \
+            --exclude vendor \
+            --exclude .venv)
+    else
+        dir_cmd=(find . -type d \
+            -not -path '*/.git/*' \
+            -not -path '*/node_modules/*' \
+            -not -path '*/dist/*' \
+            -not -path '*/build/*' \
+            -not -path '*/target/*' \
+            -not -path '*/.next/*' \
+            -not -path '*/vendor/*' \
+            -not -path '*/.venv/*')
     fi
 
     dir=$("${dir_cmd[@]}" | fzf) || return
