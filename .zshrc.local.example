@@ -1,0 +1,4 @@
+# Локальные, машинно-специфичные настройки
+# Пример:
+# path=("$HOME/.company/bin" $path)
+# [[ -r "$HOME/.magnit_zsh_autocomplete" ]] && source "$HOME/.magnit_zsh_autocomplete"
