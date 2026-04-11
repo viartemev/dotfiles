@@ -1,10 +1,10 @@
 # dotfiles-zsh
 
-Быстрый, модульный и удобный `zsh`-конфиг для macOS с упором на повседневную разработку.
+Быстрый, модульный и удобный `zsh`-конфиг для macOS с упором на ежедневную разработку.
 
 > Навигация через `zoxide`, поиск через `fzf + fd + rg`, история через `atuin`, project env через `direnv`, версии тулов через `mise`, красивые git diff через `delta`.
 
-## Что умеет
+## Возможности
 
 ### Shell UX
 - быстрый `compinit` с кэшем
@@ -16,20 +16,20 @@
 
 ### Поиск и навигация
 - `fzf` интеграции
-- `fd` для быстрого поиска файлов и директорий
-- `rg` для быстрого поиска по коду
+- `fd` для поиска файлов и директорий
+- `rg` для быстрого поиска по проекту
 - `bat` preview внутри `fzf`
 - `eza` для удобного `ls`
 
 ### Git workflow
-- `git-delta` как глобальный pager для `git diff`, `show`, `log`
+- `git-delta` как глобальный pager для `git diff`, `show`, `log -p`
+- глобальные git aliases
 - `lazygit`
-- git aliases для повседневных операций
 - `gbr` для переключения веток через `fzf`
 
 ### Environment / toolchain
-- `atuin` для нормальной истории команд
-- `direnv` для проектных env
+- `atuin` для нормальной shell history
+- `direnv` для project-local env
 - `mise` как единый version manager
 - fallback на `pyenv` / `fnm`, если `mise` не установлен
 
@@ -37,7 +37,7 @@
 - `btop`
 - `dust`
 - `duf`
-- `tlrc` / `tldr`
+- `tlrc`
 
 ---
 
@@ -61,6 +61,25 @@
 
 ---
 
+## Git aliases
+
+После установки доступны глобальные git aliases:
+
+| Alias | Команда |
+|---|---|
+| `git st` | `git status -sb` |
+| `git co` | `git checkout` |
+| `git sw` | `git switch` |
+| `git br` | `git branch` |
+| `git ci` | `git commit` |
+| `git ca` | `git commit --amend` |
+| `git last` | `git log -1 HEAD --stat` |
+| `git lg` | `git log --graph --decorate --oneline --all` |
+| `git unstage` | `git restore --staged --` |
+| `git discard` | `git restore --` |
+
+---
+
 ## Структура
 
 ```text
@@ -77,7 +96,12 @@
     integrations.zsh
     prompt.zsh
 Brewfile
+Brewfile.lock.json
+Makefile
 install.sh
+scripts/
+  doctor.sh
+  update-brew-lock.sh
 ```
 
 ---
@@ -91,7 +115,13 @@ git clone git@github.com:viartemev/dotfiles-zsh.git ~/dotfiles-zsh
 cd ~/dotfiles-zsh
 ```
 
-### 2. Запустить установку
+### 2. Установить всё одной командой
+
+```bash
+make install
+```
+
+Это эквивалентно:
 
 ```bash
 ./install.sh --brew
@@ -102,7 +132,7 @@ cd ~/dotfiles-zsh
 - сделает backup существующих файлов
 - создаст symlink'и на `.zshrc`, `.config/zsh`, `starship.toml`
 - создаст `~/.zshrc.local`, если его ещё нет
-- настроит глобальный `git + delta`
+- настроит глобальный `git + delta + aliases`
 
 ### 3. Активировать конфиг
 
@@ -110,7 +140,7 @@ cd ~/dotfiles-zsh
 source ~/.zshrc
 ```
 
-### 4. Донастроить историю
+### 4. Импортировать историю в Atuin
 
 ```bash
 atuin import auto
@@ -124,6 +154,47 @@ direnv allow
 
 ---
 
+## Make targets
+
+| Команда | Что делает |
+|---|---|
+| `make install` | ставит brew-зависимости и разворачивает конфиг |
+| `make link` | только symlink'и и git config, без brew install |
+| `make brew` | ставит зависимости из `Brewfile` |
+| `make check` | проверяет синтаксис zsh-конфигов и Brewfile |
+| `make doctor` | запускает полную проверку окружения |
+| `make lock` | обновляет `Brewfile.lock.json` |
+
+---
+
+## Doctor / checks
+
+Проверить, что всё настроено корректно:
+
+```bash
+make doctor
+```
+
+Скрипт проверяет:
+- symlink'и
+- синтаксис `.zshrc` и модулей
+- наличие инструментов из `Brewfile`
+- ключевые глобальные git-настройки
+
+---
+
+## Brewfile lock
+
+Для снапшота текущих версий Homebrew-пакетов используется:
+
+```bash
+make lock
+```
+
+Это обновляет `Brewfile.lock.json` через `brew info --json=v2` по формулам из `Brewfile`.
+
+---
+
 ## Глобальный git + delta
 
 `install.sh` автоматически включает красивые diff глобально. После этого:
@@ -132,14 +203,13 @@ direnv allow
 - `git show`
 - `git log -p`
 
-будут открываться через `delta` по умолчанию.
+идут через `delta` по умолчанию.
 
-Текущие глобальные настройки включают:
-- `core.pager = delta`
-- `interactive.diffFilter = delta --color-only`
-- `delta.navigate = true`
-- `delta.side-by-side = true`
-- `delta.line-numbers = true`
+Дополнительно настраиваются:
+- side-by-side diff
+- line numbers
+- навигация по diff
+- более аккуратные file / hunk / commit decorations
 - `merge.conflictstyle = zdiff3`
 - `diff.colorMoved = default`
 
@@ -187,13 +257,20 @@ gbr
 ```bash
 git diff
 git show
+git st
+git lg
 ```
 
-### Посмотреть, что сжирает место
+### Проверить, что машина настроена правильно
 
 ```bash
-space
-disk
+make doctor
+```
+
+### Обновить lock-файл brew-пакетов
+
+```bash
+make lock
 ```
 
 ---
@@ -224,11 +301,11 @@ disk
 ## Идея конфига
 
 Этот конфиг не пытается быть огромным фреймворком. Цель — дать:
-
 - быстрый shell startup
 - удобную навигацию по проектам
 - быстрый поиск по коду
 - приятный git UX
+- хороший bootstrap для новой машины
 - минимальный, но мощный набор команд на каждый день
 
 Если хочется машинно-специфичных доработок — они живут в `~/.zshrc.local`, а основной конфиг остаётся чистым и переносимым.

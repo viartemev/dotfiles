@@ -43,11 +43,6 @@ symlink_path() {
 }
 
 configure_git_delta() {
-  if ! command -v git >/dev/null 2>&1; then
-    warn "git not found, skipping global git config"
-    return 0
-  fi
-
   if ! command -v delta >/dev/null 2>&1; then
     warn "delta not found, skipping delta git config"
     return 0
@@ -55,18 +50,52 @@ configure_git_delta() {
 
   git config --global core.pager delta
   git config --global interactive.diffFilter 'delta --color-only'
-  git config --global delta.navigate true
-  git config --global delta.side-by-side true
-  git config --global delta.line-numbers true
-  git config --global delta.hyperlinks true
-  git config --global diff.colorMoved default
-  git config --global merge.conflictstyle zdiff3
   git config --global pager.diff delta
   git config --global pager.log delta
   git config --global pager.reflog delta
   git config --global pager.show delta
 
+  git config --global delta.navigate true
+  git config --global delta.side-by-side true
+  git config --global delta.line-numbers true
+  git config --global delta.hyperlinks true
+  git config --global delta.keep-plus-minus-markers true
+  git config --global delta.file-style 'bold yellow'
+  git config --global delta.file-decoration-style 'yellow ul'
+  git config --global delta.hunk-header-style 'file line-number syntax'
+  git config --global delta.hunk-header-decoration-style 'blue box'
+  git config --global delta.commit-style raw
+  git config --global delta.commit-decoration-style 'yellow box ul'
+
+  git config --global diff.colorMoved default
+  git config --global merge.conflictstyle zdiff3
+
   log 'configured global git + delta'
+}
+
+configure_git_aliases() {
+  git config --global alias.st 'status -sb'
+  git config --global alias.co checkout
+  git config --global alias.sw switch
+  git config --global alias.br branch
+  git config --global alias.ci commit
+  git config --global alias.ca 'commit --amend'
+  git config --global alias.last 'log -1 HEAD --stat'
+  git config --global alias.lg 'log --graph --decorate --oneline --all'
+  git config --global alias.unstage 'restore --staged --'
+  git config --global alias.discard 'restore --'
+
+  log 'configured global git aliases'
+}
+
+configure_git() {
+  if ! command -v git >/dev/null 2>&1; then
+    warn "git not found, skipping global git config"
+    return 0
+  fi
+
+  configure_git_delta
+  configure_git_aliases
 }
 
 usage() {
@@ -75,7 +104,7 @@ Usage: ./install.sh [options]
 
 Options:
   --brew              install/update tools from Brewfile
-  --skip-git-config   do not configure global git + delta
+  --skip-git-config   do not configure global git + delta + aliases
   -h, --help          show this help
 EOF
 }
@@ -122,7 +151,7 @@ if [[ ! -f "$HOME/.zshrc.local" ]]; then
 fi
 
 if [[ $SKIP_GIT_CONFIG -eq 0 ]]; then
-  configure_git_delta
+  configure_git
 fi
 
 log 'done'
@@ -130,3 +159,4 @@ printf '\nNext steps:\n'
 printf '  1) source ~/.zshrc\n'
 printf '  2) atuin import auto\n'
 printf '  3) for project envs: direnv allow\n'
+printf '  4) run ./scripts/doctor.sh to verify setup\n'
