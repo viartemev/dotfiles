@@ -73,7 +73,7 @@ profile_zsh_startup() {
 
     cat > "$tmpdir/.zshrc" <<'EOF'
 zmodload zsh/zprof
-source /Users/artemev_vi/.zshrc
+source "$HOME/.zshrc"
 zprof
 EOF
 
