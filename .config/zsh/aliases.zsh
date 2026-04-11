@@ -84,10 +84,10 @@ if command -v btop >/dev/null 2>&1; then
     alias top='btop'
 fi
 
-if command -v tldr >/dev/null 2>&1; then
-    alias tl='tldr'
-elif command -v tlrc >/dev/null 2>&1; then
+if command -v tlrc >/dev/null 2>&1; then
     alias tl='tlrc'
+elif command -v tldr >/dev/null 2>&1; then
+    alias tl='tldr'
 fi
 
 # ============================================
