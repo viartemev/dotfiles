@@ -144,6 +144,7 @@ fi
 symlink_path "$REPO_DIR/.zshrc" "$HOME/.zshrc"
 symlink_path "$REPO_DIR/.config/zsh" "$HOME/.config/zsh"
 symlink_path "$REPO_DIR/.config/starship.toml" "$HOME/.config/starship.toml"
+symlink_path "$REPO_DIR/.tmux.conf" "$HOME/.tmux.conf"
 
 if [[ ! -f "$HOME/.zshrc.local" ]]; then
   cp "$REPO_DIR/.zshrc.local.example" "$HOME/.zshrc.local"
@@ -158,5 +159,6 @@ log 'done'
 printf '\nNext steps:\n'
 printf '  1) source ~/.zshrc\n'
 printf '  2) atuin import auto\n'
-printf '  3) for project envs: direnv allow\n'
-printf '  4) run ./scripts/doctor.sh to verify setup\n'
+printf '  3) in tmux: press prefix + I to install TPM plugins\n'
+printf '  4) for project envs: direnv allow\n'
+printf '  5) run ./scripts/doctor.sh to verify setup\n'

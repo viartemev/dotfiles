@@ -65,6 +65,7 @@ printf '== symlinks ==\n'
 check_symlink "$HOME/.zshrc" "$REPO_DIR/.zshrc"
 check_symlink "$HOME/.config/zsh" "$REPO_DIR/.config/zsh"
 check_symlink "$HOME/.config/starship.toml" "$REPO_DIR/.config/starship.toml"
+check_symlink "$HOME/.tmux.conf" "$REPO_DIR/.tmux.conf"
 
 printf '\n== syntax ==\n'
 if zsh -n "$REPO_DIR/.zshrc"; then
@@ -94,6 +95,13 @@ check_git_config delta.navigate true
 check_git_config delta.side-by-side true
 check_git_config alias.st 'status -sb'
 check_git_config alias.lg 'log --graph --decorate --oneline --all'
+
+printf '\n== tmux ==\n'
+if command -v tmux >/dev/null 2>&1; then
+  ok "command found: tmux"
+else
+  warn "command missing: tmux"
+fi
 
 printf '\n== summary ==\n'
 if [[ $FAILED -eq 0 ]]; then

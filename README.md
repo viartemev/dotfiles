@@ -1,6 +1,6 @@
 # dotfiles-zsh
 
-Быстрый, модульный и удобный `zsh`-конфиг для macOS с упором на ежедневную разработку.
+Быстрый, модульный и удобный набор `zsh + tmux` конфигов для macOS с упором на ежедневную разработку.
 
 > Навигация через `zoxide`, поиск через `fzf + fd + rg`, история через `atuin`, project env через `direnv`, версии тулов через `mise`, красивые git diff через `delta`.
 
@@ -41,6 +41,13 @@
 - `dust`
 - `duf`
 - `tlrc`
+
+### tmux
+- единый `~/.tmux.conf` в репозитории
+- привычная навигация `hjkl`
+- сплиты/окна наследуют текущую директорию
+- `tmux-resurrect + tmux-continuum`
+- reload конфига через `prefix + r`
 
 ---
 
@@ -91,6 +98,7 @@
 ```text
 .zshrc
 .zshrc.local.example
+.tmux.conf
 .config/
   starship.toml
   zsh/
@@ -136,7 +144,7 @@ make install
 Скрипт:
 - поставит зависимости из `Brewfile`
 - сделает backup существующих файлов
-- создаст symlink'и на `.zshrc`, `.config/zsh`, `starship.toml`
+- создаст symlink'и на `.zshrc`, `.config/zsh`, `starship.toml`, `.tmux.conf`
 - создаст `~/.zshrc.local`, если его ещё нет
 - настроит глобальный `git + delta + aliases`
 
@@ -144,6 +152,12 @@ make install
 
 ```bash
 source ~/.zshrc
+```
+
+Если используешь tmux-плагины через TPM, внутри tmux один раз нажми:
+
+```text
+prefix + I
 ```
 
 ### 4. Импортировать историю в Atuin
@@ -182,7 +196,7 @@ make doctor
 ```
 
 Скрипт проверяет:
-- symlink'и
+- symlink'и, включая `.tmux.conf`
 - синтаксис `.zshrc` и модулей
 - наличие инструментов из `Brewfile`
 - ключевые глобальные git-настройки

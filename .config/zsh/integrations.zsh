@@ -46,17 +46,21 @@ if command -v direnv >/dev/null 2>&1; then
     eval "$(direnv hook zsh)"
 fi
 
-# mise предпочитаем как единый version manager; если его нет — используем pyenv/fnm.
+# mise предпочитаем как единый version manager.
+# Но если node не управляется через mise, подключаем fnm как fallback.
 if command -v mise >/dev/null 2>&1; then
     eval "$(mise activate zsh)"
-else
-    if command -v pyenv >/dev/null 2>&1; then
-        eval "$(pyenv init - --no-rehash zsh)"
-    fi
+fi
 
-    if command -v fnm >/dev/null 2>&1; then
-        eval "$(fnm env --use-on-cd)"
-    fi
+if command -v pyenv >/dev/null 2>&1; then
+    eval "$(pyenv init - --no-rehash zsh)"
+fi
+
+if ! command -v node >/dev/null 2>&1 && command -v fnm >/dev/null 2>&1; then
+    eval "$(fnm env --use-on-cd)"
+    # fnm --use-on-cd сам по себе не активирует default Node до первого cd,
+    # поэтому явно включаем default-версию для новых shell-сессий.
+    fnm use --silent-if-unchanged default >/dev/null 2>&1 || true
 fi
 
 # bun completions
