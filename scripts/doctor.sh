@@ -66,12 +66,27 @@ check_symlink "$HOME/.zshrc" "$REPO_DIR/.zshrc"
 check_symlink "$HOME/.config/zsh" "$REPO_DIR/.config/zsh"
 check_symlink "$HOME/.config/starship.toml" "$REPO_DIR/.config/starship.toml"
 check_symlink "$HOME/.tmux.conf" "$REPO_DIR/.tmux.conf"
+check_symlink "$HOME/.gitconfig" "$REPO_DIR/.gitconfig"
+check_symlink "$HOME/.config/git/ignore" "$REPO_DIR/.config/git/ignore"
+
+printf '\n== local files ==\n'
+if [[ -f "$HOME/.zshrc.local" ]]; then
+  ok '~/.zshrc.local exists'
+else
+  warn '~/.zshrc.local missing'
+fi
+
+if [[ -f "$HOME/.gitconfig.local" ]]; then
+  ok '~/.gitconfig.local exists'
+else
+  warn '~/.gitconfig.local missing'
+fi
 
 printf '\n== syntax ==\n'
 if zsh -n "$REPO_DIR/.zshrc"; then
-  ok ".zshrc syntax"
+  ok '.zshrc syntax'
 else
-  fail ".zshrc syntax"
+  fail '.zshrc syntax'
 fi
 
 while IFS= read -r -d '' file; do
@@ -82,6 +97,20 @@ while IFS= read -r -d '' file; do
   fi
 done < <(find "$REPO_DIR/.config/zsh" -type f -name '*.zsh' -print0 | sort -z)
 
+if bash -n "$REPO_DIR/install.sh"; then
+  ok 'install.sh syntax'
+else
+  fail 'install.sh syntax'
+fi
+
+while IFS= read -r -d '' file; do
+  if bash -n "$file"; then
+    ok "$(basename "$file") syntax"
+  else
+    fail "$(basename "$file") syntax"
+  fi
+done < <(find "$REPO_DIR/scripts" -type f -name '*.sh' -print0 | sort -z)
+
 printf '\n== commands ==\n'
 while IFS= read -r formula; do
   [[ -n "$formula" ]] || continue
@@ -90,11 +119,21 @@ done < <(awk -F'"' '/^brew / {print $2}' "$REPO_DIR/Brewfile")
 
 printf '\n== git config ==\n'
 check_git_config core.pager delta
+check_git_config core.excludesfile '~/.config/git/ignore'
 check_git_config pager.diff delta
 check_git_config delta.navigate true
 check_git_config delta.side-by-side true
+check_git_config fetch.prune true
 check_git_config alias.st 'status -sb'
 check_git_config alias.lg 'log --graph --decorate --oneline --all'
+
+printf '\n== node ==\n'
+if zsh -ic 'command -v node >/dev/null 2>&1 && command -v npm >/dev/null 2>&1'; then
+  ok "node $(zsh -ic 'node -v')"
+  ok "npm $(zsh -ic 'npm -v')"
+else
+  warn 'node/npm not found in interactive zsh'
+fi
 
 printf '\n== tmux ==\n'
 if command -v tmux >/dev/null 2>&1; then

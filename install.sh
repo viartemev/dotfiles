@@ -4,7 +4,7 @@ set -euo pipefail
 REPO_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 BACKUP_SUFFIX="backup-$(date +%Y%m%d-%H%M%S)"
 INSTALL_BREW=0
-SKIP_GIT_CONFIG=0
+APPLY_MACOS_DEFAULTS=0
 
 log() {
   printf '\033[1;34m==>\033[0m %s\n' "$*"
@@ -42,70 +42,14 @@ symlink_path() {
   log "linked: $target_path -> $source_path"
 }
 
-configure_git_delta() {
-  if ! command -v delta >/dev/null 2>&1; then
-    warn "delta not found, skipping delta git config"
-    return 0
-  fi
-
-  git config --global core.pager delta
-  git config --global interactive.diffFilter 'delta --color-only'
-  git config --global pager.diff delta
-  git config --global pager.log delta
-  git config --global pager.reflog delta
-  git config --global pager.show delta
-
-  git config --global delta.navigate true
-  git config --global delta.side-by-side true
-  git config --global delta.line-numbers true
-  git config --global delta.hyperlinks true
-  git config --global delta.keep-plus-minus-markers true
-  git config --global delta.file-style 'bold yellow'
-  git config --global delta.file-decoration-style 'yellow ul'
-  git config --global delta.hunk-header-style 'file line-number syntax'
-  git config --global delta.hunk-header-decoration-style 'blue box'
-  git config --global delta.commit-style raw
-  git config --global delta.commit-decoration-style 'yellow box ul'
-
-  git config --global diff.colorMoved default
-  git config --global merge.conflictstyle zdiff3
-
-  log 'configured global git + delta'
-}
-
-configure_git_aliases() {
-  git config --global alias.st 'status -sb'
-  git config --global alias.co checkout
-  git config --global alias.sw switch
-  git config --global alias.br branch
-  git config --global alias.ci commit
-  git config --global alias.ca 'commit --amend'
-  git config --global alias.last 'log -1 HEAD --stat'
-  git config --global alias.lg 'log --graph --decorate --oneline --all'
-  git config --global alias.unstage 'restore --staged --'
-  git config --global alias.discard 'restore --'
-
-  log 'configured global git aliases'
-}
-
-configure_git() {
-  if ! command -v git >/dev/null 2>&1; then
-    warn "git not found, skipping global git config"
-    return 0
-  fi
-
-  configure_git_delta
-  configure_git_aliases
-}
-
 usage() {
   cat <<'EOF'
 Usage: ./install.sh [options]
 
 Options:
-  --brew              install/update tools from Brewfile
-  --skip-git-config   do not configure global git + delta + aliases
-  -h, --help          show this help
+  --brew       install/update tools from Brewfile
+  --macos      apply macOS defaults from scripts/macos-defaults.sh
+  -h, --help   show this help
 EOF
 }
 
@@ -114,8 +58,8 @@ while [[ $# -gt 0 ]]; do
     --brew)
       INSTALL_BREW=1
       ;;
-    --skip-git-config)
-      SKIP_GIT_CONFIG=1
+    --macos)
+      APPLY_MACOS_DEFAULTS=1
       ;;
     -h|--help)
       usage
@@ -145,20 +89,29 @@ symlink_path "$REPO_DIR/.zshrc" "$HOME/.zshrc"
 symlink_path "$REPO_DIR/.config/zsh" "$HOME/.config/zsh"
 symlink_path "$REPO_DIR/.config/starship.toml" "$HOME/.config/starship.toml"
 symlink_path "$REPO_DIR/.tmux.conf" "$HOME/.tmux.conf"
+symlink_path "$REPO_DIR/.gitconfig" "$HOME/.gitconfig"
+symlink_path "$REPO_DIR/.config/git/ignore" "$HOME/.config/git/ignore"
 
 if [[ ! -f "$HOME/.zshrc.local" ]]; then
   cp "$REPO_DIR/.zshrc.local.example" "$HOME/.zshrc.local"
   log 'created ~/.zshrc.local from example'
 fi
 
-if [[ $SKIP_GIT_CONFIG -eq 0 ]]; then
-  configure_git
+if [[ ! -f "$HOME/.gitconfig.local" ]]; then
+  cp "$REPO_DIR/.gitconfig.local.example" "$HOME/.gitconfig.local"
+  log 'created ~/.gitconfig.local from example'
+fi
+
+if [[ $APPLY_MACOS_DEFAULTS -eq 1 ]]; then
+  "$REPO_DIR/scripts/macos-defaults.sh"
 fi
 
 log 'done'
 printf '\nNext steps:\n'
 printf '  1) source ~/.zshrc\n'
-printf '  2) atuin import auto\n'
-printf '  3) in tmux: press prefix + I to install TPM plugins\n'
-printf '  4) for project envs: direnv allow\n'
-printf '  5) run ./scripts/doctor.sh to verify setup\n'
+printf '  2) review ~/.gitconfig.local and fill in user.name / user.email\n'
+printf '  3) atuin import auto\n'
+printf '  4) in tmux: press prefix + I to install TPM plugins\n'
+printf '  5) for project envs: direnv allow\n'
+printf '  6) optional: make macos\n'
+printf '  7) run ./scripts/doctor.sh to verify setup\n'

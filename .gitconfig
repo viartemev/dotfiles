@@ -1,0 +1,61 @@
+[include]
+    path = ~/.gitconfig.local
+
+[core]
+    pager = delta
+    excludesfile = ~/.config/git/ignore
+
+[interactive]
+    diffFilter = delta --color-only
+
+[pager]
+    diff = delta
+    log = delta
+    reflog = delta
+    show = delta
+
+[delta]
+    navigate = true
+    side-by-side = true
+    line-numbers = true
+    hyperlinks = true
+    keep-plus-minus-markers = true
+    file-style = bold yellow
+    file-decoration-style = yellow ul
+    hunk-header-style = file line-number syntax
+    hunk-header-decoration-style = blue box
+    commit-style = raw
+    commit-decoration-style = yellow box ul
+
+[diff]
+    colorMoved = default
+
+[merge]
+    conflictstyle = zdiff3
+
+[init]
+    defaultBranch = main
+
+[fetch]
+    prune = true
+
+[pull]
+    rebase = false
+
+[push]
+    autoSetupRemote = true
+
+[rerere]
+    enabled = true
+
+[alias]
+    st = status -sb
+    co = checkout
+    sw = switch
+    br = branch
+    ci = commit
+    ca = commit --amend
+    last = log -1 HEAD --stat
+    lg = log --graph --decorate --oneline --all
+    unstage = restore --staged --
+    discard = restore --

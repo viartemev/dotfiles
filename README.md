@@ -1,105 +1,52 @@
-# dotfiles-zsh
+# dotfiles
 
-Быстрый, модульный и удобный набор `zsh + tmux` конфигов для macOS с упором на ежедневную разработку.
+Универсальные `dotfiles` для macOS: `zsh`, `tmux`, `git`, `starship`, Homebrew bootstrap и базовые macOS defaults для ежедневной разработки.
 
-> Навигация через `zoxide`, поиск через `fzf + fd + rg`, история через `atuin`, project env через `direnv`, версии тулов через `mise`, красивые git diff через `delta`.
+> Навигация через `zoxide`, поиск через `fzf + fd + rg`, история через `atuin`, project env через `direnv`, версии тулов через `mise`, fallback на `fnm`, красивые git diff через `delta`.
 
-## Возможности
+## Что внутри
 
 ### Shell UX
+- модульный `zsh`-конфиг
 - быстрый `compinit` с кэшем
-- модульная структура конфига
-- аккуратный `starship` prompt:
-  - короткая директория
-  - `git branch`
-  - `git status`
-- `zsh-autosuggestions`
-- `zsh-syntax-highlighting`
-- `zoxide` + привычный `cd='z'`
+- `starship` prompt
+- `zoxide`, `fzf`, `fd`, `rg`, `bat`, `eza`
+- `atuin` history
+- `direnv`
+- `mise` + fallback на `fnm`
 
-### Поиск и навигация
-- `fzf` интеграции
-- `fd` для поиска файлов и директорий
-- `rg` для быстрого поиска по проекту
-- `bat` preview внутри `fzf`
-- `eza` для удобного `ls`
-
-### Git workflow
-- `git-delta` как глобальный pager для `git diff`, `show`, `log -p`
-- глобальные git aliases
-- `lazygit`
-- `gbr` для переключения веток через `fzf`
-
-### Environment / toolchain
-- `atuin` для нормальной shell history
-- `direnv` для project-local env
-- `mise` как единый version manager
-- fallback на `pyenv` / `fnm`, если `mise` не установлен
-
-### Utility stack
-- `btop`
-- `dust`
-- `duf`
-- `tlrc`
+### Git
+- file-based `~/.gitconfig` из репозитория
+- `delta` для `git diff/show/log -p`
+- полезные aliases
+- глобальный ignore-файл
+- приватные настройки в `~/.gitconfig.local`
 
 ### tmux
-- единый `~/.tmux.conf` в репозитории
-- привычная навигация `hjkl`
-- сплиты/окна наследуют текущую директорию
+- единый `~/.tmux.conf`
+- `hjkl`-навигация по pane
+- сплиты и окна наследуют cwd
 - `tmux-resurrect + tmux-continuum`
-- reload конфига через `prefix + r`
 
----
-
-## Быстрые команды
-
-| Команда | Что делает |
-|---|---|
-| `vf` | выбрать файл через `fzf` и открыть в `$EDITOR` |
-| `cdf` | выбрать директорию через `fzf` и перейти в неё |
-| `rgv <query>` | найти в проекте через `rg` и открыть результат в редакторе |
-| `gbr` | выбрать git-ветку через `fzf` |
-| `glogf` | выбрать commit через `fzf` и показать его |
-| `gfixup` | выбрать commit и создать `fixup!` commit |
-| `gcf` | выбрать изменённый файл через `fzf` и открыть в редакторе |
-| `lg` | открыть `lazygit` |
-| `tl <cmd>` | быстрые примеры по команде |
-| `space` | показать, что занимает место на диске (`dust`) |
-| `disk` | usage по файловым системам (`duf`) |
-| `top` | открыть `btop` |
-| `profile_zsh_startup` | профилировать startup `zsh` |
-| `mkcd foo/bar` | создать директорию и зайти в неё |
-| `extract file.tar.gz` | распаковать архив |
-| `backup path` | создать timestamp backup |
-
----
-
-## Git aliases
-
-После установки доступны глобальные git aliases:
-
-| Alias | Команда |
-|---|---|
-| `git st` | `git status -sb` |
-| `git co` | `git checkout` |
-| `git sw` | `git switch` |
-| `git br` | `git branch` |
-| `git ci` | `git commit` |
-| `git ca` | `git commit --amend` |
-| `git last` | `git log -1 HEAD --stat` |
-| `git lg` | `git log --graph --decorate --oneline --all` |
-| `git unstage` | `git restore --staged --` |
-| `git discard` | `git restore --` |
+### Bootstrap
+- `Brewfile` для установки основного toolchain
+- `install.sh` для symlink'ов и локальных шаблонов
+- `scripts/macos-defaults.sh` для opt-in macOS defaults
+- `scripts/doctor.sh` для проверки окружения
 
 ---
 
 ## Структура
 
 ```text
+.gitconfig
+.gitconfig.local.example
+.tmux.conf
 .zshrc
 .zshrc.local.example
-.tmux.conf
 .config/
+  git/
+    ignore
   starship.toml
   zsh/
     options.zsh
@@ -115,6 +62,7 @@ Makefile
 install.sh
 scripts/
   doctor.sh
+  macos-defaults.sh
   update-brew-lock.sh
 ```
 
@@ -125,11 +73,11 @@ scripts/
 ### 1. Клонировать репозиторий
 
 ```bash
-git clone git@github.com:viartemev/dotfiles-zsh.git ~/dotfiles-zsh
-cd ~/dotfiles-zsh
+git clone git@github.com:viartemev/dotfiles.git ~/dotfiles
+cd ~/dotfiles
 ```
 
-### 2. Установить всё одной командой
+### 2. Развернуть конфиги
 
 ```bash
 make install
@@ -142,35 +90,53 @@ make install
 ```
 
 Скрипт:
-- поставит зависимости из `Brewfile`
+- установит зависимости из `Brewfile`
 - сделает backup существующих файлов
-- создаст symlink'и на `.zshrc`, `.config/zsh`, `starship.toml`, `.tmux.conf`
-- создаст `~/.zshrc.local`, если его ещё нет
-- настроит глобальный `git + delta + aliases`
+- создаст symlink'и на `.zshrc`, `.tmux.conf`, `.gitconfig`, `~/.config/zsh`, `starship.toml`, `~/.config/git/ignore`
+- создаст `~/.zshrc.local` и `~/.gitconfig.local`, если их ещё нет
 
-### 3. Активировать конфиг
+### 3. Заполнить приватные Git-настройки
+
+Открой и отредактируй:
+
+```bash
+$EDITOR ~/.gitconfig.local
+```
+
+Минимум, что стоит заполнить:
+
+```ini
+[user]
+    name = Your Name
+    email = you@example.com
+```
+
+### 4. Активировать shell-конфиг
 
 ```bash
 source ~/.zshrc
 ```
 
-Если используешь tmux-плагины через TPM, внутри tmux один раз нажми:
+### 5. Установить tmux-плагины
+
+Внутри tmux один раз нажми:
 
 ```text
 prefix + I
 ```
 
-### 4. Импортировать историю в Atuin
+### 6. Опционально применить macOS defaults
 
 ```bash
-atuin import auto
+make macos
 ```
 
-### 5. Для project-local env
-
-```bash
-direnv allow
-```
+Скрипт включает:
+- показ расширений файлов
+- path/status bar в Finder
+- быстрый key repeat
+- autohide Dock
+- отключение recent apps в Dock
 
 ---
 
@@ -178,10 +144,12 @@ direnv allow
 
 | Команда | Что делает |
 |---|---|
-| `make install` | ставит brew-зависимости и разворачивает конфиг |
-| `make link` | только symlink'и и git config, без brew install |
+| `make install` | ставит brew-зависимости и разворачивает конфиги |
+| `make link` | только symlink'и и локальные шаблоны |
 | `make brew` | ставит зависимости из `Brewfile` |
-| `make check` | проверяет синтаксис zsh-конфигов и Brewfile |
+| `make macos` | применяет macOS defaults |
+| `make bootstrap` | `make install && make macos` |
+| `make check` | проверяет синтаксис конфигов и скриптов |
 | `make doctor` | запускает полную проверку окружения |
 | `make lock` | обновляет `Brewfile.lock.json` |
 
@@ -189,133 +157,23 @@ direnv allow
 
 ## Doctor / checks
 
-Проверить, что всё настроено корректно:
-
 ```bash
 make doctor
 ```
 
-Скрипт проверяет:
-- symlink'и, включая `.tmux.conf`
-- синтаксис `.zshrc` и модулей
+Проверяет:
+- symlink'и
+- наличие локальных файлов `~/.zshrc.local` и `~/.gitconfig.local`
+- синтаксис `zsh`/`bash` файлов
 - наличие инструментов из `Brewfile`
-- ключевые глобальные git-настройки
+- ключевые git-настройки
+- доступность `node/npm` в текущем shell
 
 ---
 
-## Brewfile lock
+## Brewfile
 
-Для снапшота текущих версий Homebrew-пакетов используется:
-
-```bash
-make lock
-```
-
-Это обновляет `Brewfile.lock.json` через `brew info --json=v2` по формулам из `Brewfile`.
-
----
-
-## Глобальный git + delta
-
-`install.sh` автоматически включает красивые diff глобально. После этого:
-
-- `git diff`
-- `git show`
-- `git log -p`
-
-идут через `delta` по умолчанию.
-
-Дополнительно настраиваются:
-- side-by-side diff
-- line numbers
-- навигация по diff
-- более аккуратные file / hunk / commit decorations
-- `merge.conflictstyle = zdiff3`
-- `diff.colorMoved = default`
-
----
-
-## Локальные настройки
-
-Всё машинно-специфичное и приватное держи в:
-
-```bash
-~/.zshrc.local
-```
-
-Например:
-- рабочие autocomplete-скрипты
-- PATH для внутренних тулов
-- секретные env
-- локальные alias/function overrides
-
----
-
-## Полезный workflow
-
-### Найти файл и открыть
-
-```bash
-vf
-```
-
-### Найти строку в проекте и сразу прыгнуть в редактор
-
-```bash
-rgv "TODO"
-rgv "NewServer"
-```
-
-### Переключить ветку через fuzzy finder
-
-```bash
-gbr
-```
-
-### Выбрать commit и посмотреть его
-
-```bash
-glogf
-```
-
-### Сделать fixup commit для autosquash workflow
-
-```bash
-gfixup
-```
-
-### Открыть изменённый файл из git status
-
-```bash
-gcf
-```
-
-### Посмотреть красивые diff
-
-```bash
-git diff
-git show
-git st
-git lg
-```
-
-### Проверить, что машина настроена правильно
-
-```bash
-make doctor
-```
-
-### Обновить lock-файл brew-пакетов
-
-```bash
-make lock
-```
-
----
-
-## Зависимости
-
-Основной стек из `Brewfile`:
+Основной стек:
 
 - `atuin`
 - `bat`
@@ -325,6 +183,7 @@ make lock
 - `dust`
 - `eza`
 - `fd`
+- `fnm`
 - `fzf`
 - `git-delta`
 - `lazygit`
@@ -332,18 +191,33 @@ make lock
 - `ripgrep`
 - `starship`
 - `tlrc`
+- `tmux`
 - `zoxide`
 
 ---
 
-## Идея конфига
+## Полезные команды
 
-Этот конфиг не пытается быть огромным фреймворком. Цель — дать:
-- быстрый shell startup
-- удобную навигацию по проектам
-- быстрый поиск по коду
-- приятный git UX
-- хороший bootstrap для новой машины
-- минимальный, но мощный набор команд на каждый день
+| Команда | Что делает |
+|---|---|
+| `vf` | выбрать файл через `fzf` и открыть в `$EDITOR` |
+| `cdf` | выбрать директорию через `fzf` и перейти в неё |
+| `rgv <query>` | найти в проекте через `rg` и открыть результат в редакторе |
+| `gbr` | выбрать git-ветку через `fzf` |
+| `glogf` | выбрать commit через `fzf` и показать его |
+| `gfixup` | выбрать commit и создать `fixup!` commit |
+| `gcf` | выбрать изменённый файл через `fzf` и открыть в редакторе |
+| `lg` | открыть `lazygit` |
+| `profile_zsh_startup` | профилировать startup `zsh` |
+| `mkcd foo/bar` | создать директорию и зайти в неё |
+| `extract file.tar.gz` | распаковать архив |
+| `backup path` | создать timestamp backup |
 
-Если хочется машинно-специфичных доработок — они живут в `~/.zshrc.local`, а основной конфиг остаётся чистым и переносимым.
+---
+
+## Идея
+
+Репозиторий остаётся переносимым:
+- общий, versioned конфиг живёт в репо
+- приватное и машинно-специфичное — в `~/.zshrc.local` и `~/.gitconfig.local`
+- bootstrap новой машины — через `make install`, `make macos`, `make doctor`
