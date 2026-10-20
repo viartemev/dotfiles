@@ -12,3 +12,6 @@ do
 done
 
 [[ -r "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
+
+# Установщики любят дописывать сюда export PATH=... — переносите их
+# в ~/.config/zsh/env.zsh (массив path), иначе они перекроют mise.

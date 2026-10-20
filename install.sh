@@ -80,6 +80,10 @@ if [[ $INSTALL_BREW -eq 1 ]]; then
   if command -v brew >/dev/null 2>&1; then
     log 'installing brew dependencies from Brewfile'
     brew bundle --file "$REPO_DIR/Brewfile"
+    if [[ -f "$REPO_DIR/Brewfile.work" ]]; then
+      log 'installing machine-specific deps from Brewfile.work'
+      brew bundle --file "$REPO_DIR/Brewfile.work"
+    fi
   else
     warn 'Homebrew not found, skipping Brewfile install'
   fi
@@ -91,6 +95,7 @@ symlink_path "$REPO_DIR/.config/starship.toml" "$HOME/.config/starship.toml"
 symlink_path "$REPO_DIR/.tmux.conf" "$HOME/.tmux.conf"
 symlink_path "$REPO_DIR/.gitconfig" "$HOME/.gitconfig"
 symlink_path "$REPO_DIR/.config/git/ignore" "$HOME/.config/git/ignore"
+symlink_path "$REPO_DIR/.config/mise/config.toml" "$HOME/.config/mise/config.toml"
 
 if [[ ! -f "$HOME/.zshrc.local" ]]; then
   cp "$REPO_DIR/.zshrc.local.example" "$HOME/.zshrc.local"

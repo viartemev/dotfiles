@@ -2,7 +2,7 @@
 
 Универсальные `dotfiles` для macOS: `zsh`, `tmux`, `git`, `starship`, Homebrew bootstrap и базовые macOS defaults для ежедневной разработки.
 
-> Навигация через `zoxide`, поиск через `fzf + fd + rg`, история через `atuin`, project env через `direnv`, версии тулов через `mise`, fallback на `fnm`, красивые git diff через `delta`.
+> Навигация через `zoxide`, поиск через `fzf + fd + rg`, история через `atuin`, project env через `direnv`, версии тулов через `mise`, красивые git diff через `delta`.
 
 ## Что внутри
 
@@ -13,7 +13,7 @@
 - `zoxide`, `fzf`, `fd`, `rg`, `bat`, `eza`
 - `atuin` history
 - `direnv`
-- `mise` + fallback на `fnm`
+- `mise` — Java, Python, Node, Go, Gradle (`~/.config/mise/config.toml`)
 
 ### Git
 - file-based `~/.gitconfig` из репозитория
@@ -183,7 +183,6 @@ make doctor
 - `dust`
 - `eza`
 - `fd`
-- `fnm`
 - `fzf`
 - `git-delta`
 - `lazygit`

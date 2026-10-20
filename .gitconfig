@@ -59,3 +59,9 @@
     lg = log --graph --decorate --oneline --all
     unstage = restore --staged --
     discard = restore --
+[credential "https://github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential

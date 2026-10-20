@@ -1,0 +1,16 @@
+[tools]
+# Первая версия в списке — по умолчанию, остальные установлены для проектов
+java   = ["temurin-21", "temurin-25"]
+python = "3.12"
+node   = "24"
+pnpm   = "10"
+go     = "1.26"
+gradle = "9.5"
+
+[settings]
+# Ставит bin-пути инструментов в начало PATH, перед остальными
+activate_aggressive = true
+# Читать .java-version / .sdkmanrc / .nvmrc / .python-version в проектах
+idiomatic_version_file_enable_tools = ["java", "node", "python"]
+# Автоактивация .venv, созданного uv, при входе в проект
+python.uv_venv_auto = true

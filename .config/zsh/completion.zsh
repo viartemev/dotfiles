@@ -1,6 +1,14 @@
 # ============================================
 # Автодополнение
 # ============================================
+# Пользовательские и Homebrew completions должны быть в fpath до compinit.
+# Например, alias cat='bat ...' использует completion-функцию _bat.
+if [[ -d /opt/homebrew/share/zsh/site-functions ]]; then
+    fpath=(/opt/homebrew/share/zsh/site-functions $fpath)
+fi
+if [[ -d /usr/local/share/zsh/site-functions ]]; then
+    fpath=(/usr/local/share/zsh/site-functions $fpath)
+fi
 fpath=(~/.zsh/zsh-completions/src $fpath)
 autoload -Uz compinit
 

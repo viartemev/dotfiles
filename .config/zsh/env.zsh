@@ -4,24 +4,29 @@
 export EDITOR="${EDITOR:-nvim}"
 export VISUAL="${VISUAL:-$EDITOR}"
 export LANG="${LANG:-en_US.UTF-8}"
-export PYENV_ROOT="${PYENV_ROOT:-$HOME/.pyenv}"
 export GOPATH="${GOPATH:-$HOME/go}"
 export BUN_INSTALL="${BUN_INSTALL:-$HOME/.bun}"
 export STARSHIP_CONFIG="${STARSHIP_CONFIG:-$HOME/.config/starship.toml}"
 
 typeset -U path PATH fpath
 
-# Homebrew (для M1/M2/M3 Mac)
-if [[ -x /opt/homebrew/bin/brew ]] && [[ ":$PATH:" != *":/opt/homebrew/bin:"* ]]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
+# Homebrew (ставим РАНЬШЕ системных путей, а не через brew shellenv)
+if [[ -x /opt/homebrew/bin/brew ]]; then
+    export HOMEBREW_PREFIX="/opt/homebrew"
+    export HOMEBREW_CELLAR="/opt/homebrew/Cellar"
+    export HOMEBREW_REPOSITORY="/opt/homebrew"
+    [ -z "${MANPATH-}" ] || export MANPATH=":${MANPATH#:}"
+    export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}"
 fi
 
 path=(
+    /opt/homebrew/bin
+    /opt/homebrew/sbin
     "$HOME/.local/bin"
     "$GOPATH/bin"
-    "$PYENV_ROOT/bin"
     "$HOME/.opencode/bin"
     "$BUN_INSTALL/bin"
+    "$HOME/.strix/bin"
     $path
 )
 
