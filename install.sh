@@ -97,6 +97,7 @@ symlink_path "$REPO_DIR/.gitconfig" "$HOME/.gitconfig"
 symlink_path "$REPO_DIR/.config/git/ignore" "$HOME/.config/git/ignore"
 symlink_path "$REPO_DIR/.config/mise/config.toml" "$HOME/.config/mise/config.toml"
 symlink_path "$REPO_DIR/.config/zed" "$HOME/.config/zed"
+symlink_path "$REPO_DIR/.config/ghostty" "$HOME/.config/ghostty"
 
 if [[ ! -f "$HOME/.zshrc.local" ]]; then
   cp "$REPO_DIR/.zshrc.local.example" "$HOME/.zshrc.local"

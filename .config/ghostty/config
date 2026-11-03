@@ -1,0 +1,88 @@
+theme = Andromeda
+unfocused-split-opacity = 0.75
+confirm-close-surface = false
+window-save-state = always
+quit-after-last-window-closed = true
+
+window-height = 36
+window-width = 160
+window-padding-x = 24
+window-padding-y = 24
+
+font-family = "JetBrainsMono Nerd Font Mono"
+font-size = 12
+# disable ligatures so agent diff arrows don't fuse
+font-feature = -calt
+# compensate for no subpixel AA on non-Retina external monitor
+font-thicken = true
+font-thicken-strength = 175
+minimum-contrast = 1.1
+# Titlebar tabs: was broken on macOS 26/27 until ghostty 1.4.0
+# (ghostty #14244, #14421, #13069, #9090). Fixed in 1.4.0 release notes:
+# "Tabs in the titlebar lay out correctly again." Revert to "native" only
+# if tabs break again.
+macos-titlebar-style = "tabs"
+# tmux alt-bindings + tmux-yank work
+macos-option-as-alt = true
+# hide app icon from dock alt-tab clutter; use always to hide when unfocused
+macos-hidden = never
+macos-dock-drop-behavior = new-tab
+macos-window-shadow = true
+
+# --- Clipboard / OSC52 (copy from agent panes over ssh) ---
+clipboard-read = allow
+clipboard-write = allow
+
+# --- Shell integration drives tmux pane_current_path + OSC cwd ---
+# auto-detect bash/zsh/fish
+shell-integration = detect
+# cursor,hint + title + sudo wrapper + OSC7 cwd path; ssh-env/ssh-terminfo
+# carry pane cwd/env across ssh hops so agent cwd stays correct.
+shell-integration-features = cursor,title,sudo,path,ssh-env,ssh-terminfo
+
+# --- Bigger in-term scrollback for agent firehoses ---
+scrollback-limit = 100000
+
+# --- Cursor / mouse behaviour ---
+cursor-style = block
+cursor-style-blink = true
+mouse-hide-while-typing = true
+
+# --- Clickable paths/URLs in agent output (.md refs, file paths) ---
+link-url = true
+
+# --- Bold stays readable in models' diff output (replaces deprecated bold-is-bright) ---
+bold-color = #cdd6f4
+font-style-bold = true
+
+# --- Quick terminal (Quake-style dropdown) ---
+quick-terminal-position = top
+quick-terminal-animation-duration = 0.15
+quick-terminal-autohide = true
+keybind = cmd+grave_accent=toggle_quick_terminal
+
+# --- Splits & navigation ---
+keybind = cmd+d=new_split:right
+keybind = cmd+shift+d=new_split:down
+keybind = opt+left=goto_split:left
+keybind = opt+right=goto_split:right
+keybind = opt+up=goto_split:up
+keybind = opt+down=goto_split:down
+keybind = cmd+ctrl+left=resize_split:left,50
+keybind = cmd+ctrl+right=resize_split:right,50
+keybind = cmd+ctrl+up=resize_split:up,50
+keybind = cmd+ctrl+down=resize_split:down,50
+keybind = cmd+shift+enter=toggle_split_zoom
+keybind = cmd+w=close_surface
+keybind = cmd+t=new_tab
+keybind = cmd+equal=increase_font_size:1
+keybind = cmd+minus=decrease_font_size:1
+keybind = cmd+0=reset_font_size
+
+# --- Notifications ---
+desktop-notifications = false
+notify-on-command-finish = never
+
+# --- Quick attach to tmux 'main' session: types command into current shell ---
+keybind = cmd+ctrl+t=text:tmux new -A -s main\n
+keybind = shift+enter=text:\n
