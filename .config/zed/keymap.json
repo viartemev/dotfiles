@@ -1,0 +1,27 @@
+// Keymap: дополнения к base_keymap "JetBrains" (см. settings.json).
+// Цель — дефолтная раскладка GoLand на macOS там, где штатный JetBrains-keymap
+// в Zed использует linux/win-варианты или ничего не биндит.
+// Проверить/поправить наглядно: command palette -> "zed: open keymap editor".
+[
+  {
+    "context": "Workspace",
+    "bindings": {
+      // Run / Debug контекста (GoLand: Ctrl+Shift+R / Ctrl+Shift+D)
+      "ctrl-shift-r": "task::Spawn",
+      "ctrl-shift-d": "debugger::Start",
+      // Отладчик как в GoLand на macOS
+      "cmd-alt-r": "debugger::Continue",
+      "cmd-f2": "debugger::Stop",
+    },
+  },
+  {
+    "context": "Editor && mode == full",
+    "bindings": {
+      // Breakpoint: GoLand macOS = Cmd+F8 (в jetbrains.json был ctrl-f8)
+      "cmd-f8": "editor::ToggleBreakpoint",
+      // Move line/statement: GoLand macOS = Cmd+Shift+Up/Down
+      "cmd-shift-up": "editor::MoveLineUp",
+      "cmd-shift-down": "editor::MoveLineDown",
+    },
+  },
+]

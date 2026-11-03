@@ -28,6 +28,12 @@
 - сплиты и окна наследуют cwd
 - `tmux-resurrect + tmux-continuum`
 
+### Zed (в стиле GoLand)
+- `base_keymap: "JetBrains"` + доки `project_panel` / `outline_panel` / `git_panel` слева
+- `~/.config/zed/keymap.json` — добивка mac-раскладки GoLand (`Cmd+F8` breakpoint, `Cmd+F2` stop, `Cmd+Alt+R` resume, `Cmd+Shift+↑/↓` move line, `Ctrl+Shift+R/D` run/debug)
+- Go: gopls + Delve (`go install golang.org/x/tools/gopls@latest github.com/go-delve/delve/cmd/dlv@latest`), inlay hints в стиле GoLand, `code_lens` для тестов
+- оба файла симлинкаются из репозитория; при переносе на другую машину ничего не нужно править вручную
+
 ### Bootstrap
 - `Brewfile` для установки основного toolchain
 - `install.sh` для symlink'ов и локальных шаблонов
@@ -47,7 +53,12 @@
 .config/
   git/
     ignore
+  mise/
+    config.toml
   starship.toml
+  zed/
+    settings.json
+    keymap.json
   zsh/
     options.zsh
     env.zsh
@@ -92,7 +103,7 @@ make install
 Скрипт:
 - установит зависимости из `Brewfile`
 - сделает backup существующих файлов
-- создаст symlink'и на `.zshrc`, `.tmux.conf`, `.gitconfig`, `~/.config/zsh`, `starship.toml`, `~/.config/git/ignore`
+- создаст symlink'и на `.zshrc`, `.tmux.conf`, `.gitconfig`, `~/.config/zsh`, `starship.toml`, `~/.config/git/ignore`, `~/.config/zed/{settings,keymap}.json`
 - создаст `~/.zshrc.local` и `~/.gitconfig.local`, если их ещё нет
 
 ### 3. Заполнить приватные Git-настройки

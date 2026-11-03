@@ -96,6 +96,7 @@ symlink_path "$REPO_DIR/.tmux.conf" "$HOME/.tmux.conf"
 symlink_path "$REPO_DIR/.gitconfig" "$HOME/.gitconfig"
 symlink_path "$REPO_DIR/.config/git/ignore" "$HOME/.config/git/ignore"
 symlink_path "$REPO_DIR/.config/mise/config.toml" "$HOME/.config/mise/config.toml"
+symlink_path "$REPO_DIR/.config/zed" "$HOME/.config/zed"
 
 if [[ ! -f "$HOME/.zshrc.local" ]]; then
   cp "$REPO_DIR/.zshrc.local.example" "$HOME/.zshrc.local"
@@ -120,3 +121,4 @@ printf '  4) in tmux: press prefix + I to install TPM plugins\n'
 printf '  5) for project envs: direnv allow\n'
 printf '  6) optional: make macos\n'
 printf '  7) run ./scripts/doctor.sh to verify setup\n'
+printf '  8) optional Go tooling for Zed: go install golang.org/x/tools/gopls@latest github.com/go-delve/delve/cmd/dlv@latest\n'

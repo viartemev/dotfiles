@@ -68,6 +68,14 @@ check_symlink "$HOME/.config/starship.toml" "$REPO_DIR/.config/starship.toml"
 check_symlink "$HOME/.tmux.conf" "$REPO_DIR/.tmux.conf"
 check_symlink "$HOME/.gitconfig" "$REPO_DIR/.gitconfig"
 check_symlink "$HOME/.config/git/ignore" "$REPO_DIR/.config/git/ignore"
+check_symlink "$HOME/.config/zed" "$REPO_DIR/.config/zed"
+for file in settings.json keymap.json; do
+  if [[ -f "$REPO_DIR/.config/zed/$file" ]]; then
+    ok "~/.config/zed/$file present"
+  else
+    fail "~/.config/zed/$file missing"
+  fi
+done
 
 printf '\n== local files ==\n'
 if [[ -f "$HOME/.zshrc.local" ]]; then
@@ -134,6 +142,15 @@ if zsh -ic 'command -v node >/dev/null 2>&1 && command -v npm >/dev/null 2>&1'; 
 else
   warn 'node/npm not found in interactive zsh'
 fi
+
+printf '\n== go tooling ==\n'
+for cmd in gopls dlv; do
+  if command -v "$cmd" >/dev/null 2>&1; then
+    ok "command found: $cmd"
+  else
+    warn "command missing: $cmd (go install golang.org/x/tools/gopls@latest / github.com/go-delve/delve/cmd/dlv@latest)"
+  fi
+done
 
 printf '\n== tmux ==\n'
 if command -v tmux >/dev/null 2>&1; then

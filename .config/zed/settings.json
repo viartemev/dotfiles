@@ -1,0 +1,72 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette (cmd-shift-p / ctrl-shift-p)
+{
+  "buffer_font_weight": 400.0,
+  "buffer_font_family": "JetBrainsMonoNL Nerd Font",
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false,
+    "anthropic_retention": false
+  },
+  "agent_servers": {
+    "codex-acp": {
+      "type": "registry"
+    },
+    "claude-acp": {
+      "type": "registry"
+    }
+  },
+  "base_keymap": "JetBrains",
+  "ui_font_size": 16,
+  "buffer_font_size": 13.0,
+  "theme": "One Dark",
+
+  // --- Раскладка как в GoLand: дерево и боковые панели слева ------------------
+  "project_panel": { "dock": "left" },
+  "outline_panel": { "dock": "left" },
+  "git_panel": { "dock": "left" },
+  "collaboration_panel": { "dock": "left" },
+
+  // --- Go / GoLand-подобное поведение ---------------------------------------
+  // GoLand сохраняет файлы сам, а не по Cmd+S
+  "autosave": "on_focus_change",
+  // "Run test | Benchmark" над тестами, как ▶ в GoLand
+  "code_lens": "on",
+  "languages": {
+    "Go": {
+      // Zed уже включает format_on_save для Go (gopls/gofmt)
+      "inlay_hints": {
+        "enabled": true,
+        "show_parameter_hints": true, // parameter names
+        "show_type_hints": true, // range variable types
+        "show_other_hints": true, // composite literal fields
+        "show_background": false,
+      },
+    },
+  },
+  "lsp": {
+    "gopls": {
+      "initialization_options": {
+        // автодополнение с плейсхолдерами и авто-импортами, как в GoLand
+        "usePlaceholders": true,
+        "completeUnimported": true,
+        "hints": {
+          // оставляем только те подсказки, что есть в GoLand
+          "assignVariableTypes": false,
+          "compositeLiteralTypes": false,
+          "constantValues": false,
+          "compositeLiteralFields": true,
+          "functionTypeParameters": true,
+          "parameterNames": true,
+          "rangeVariableTypes": true,
+        },
+      },
+    },
+  },
+}
