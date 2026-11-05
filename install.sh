@@ -146,9 +146,9 @@ if [[ ! -f "$PI_AGENT_DIR/mcp.json" ]]; then
   log 'created mcp.json from example (review the server URLs)'
 fi
 
-if [[ ! -f "$PI_AGENT_DIR/secrets/explabs-api.key" ]]; then
-  install -m 600 /dev/null "$PI_AGENT_DIR/secrets/explabs-api.key"
-  warn "put the Experiential Labs API key into $PI_AGENT_DIR/secrets/explabs-api.key"
+if [[ ! -f "$PI_AGENT_DIR/secrets/experientiallabs-api.key" ]]; then
+  install -m 600 /dev/null "$PI_AGENT_DIR/secrets/experientiallabs-api.key"
+  warn "put the Experiential Labs API key into $PI_AGENT_DIR/secrets/experientiallabs-api.key"
 fi
 
 # Block commits that would publish a credential from agents/.

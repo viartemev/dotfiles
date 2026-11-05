@@ -2,6 +2,41 @@
   "mcpServers": {
     "searxng": {
       "url": "https://searxng-mcp.example.internal/mcp"
+    },
+    "outlook": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/viartemev/outlook-ews-mcp.git",
+        "outlook-ews-mcp"
+      ],
+      "cwd": "$HOME/Projects/outlook-mcp"
+    },
+    "lightpanda": {
+      "command": "/opt/homebrew/bin/lightpanda",
+      "args": [
+        "mcp"
+      ]
+    },
+    "jira": {
+      "command": "uvx",
+      "args": [
+        "mcp-atlassian"
+      ],
+      "env": {
+        "JIRA_URL": "https://jira.example.internal",
+        "JIRA_PERSONAL_TOKEN": "REPLACE_ME_OR_KEEP_IN_mcp.local.json"
+      }
+    },
+    "wiki": {
+      "command": "uvx",
+      "args": [
+        "mcp-atlassian"
+      ],
+      "env": {
+        "CONFLUENCE_URL": "https://confluence.example.internal",
+        "CONFLUENCE_PERSONAL_TOKEN": "REPLACE_ME_OR_KEEP_IN_mcp.local.json"
+      }
     }
   }
 }

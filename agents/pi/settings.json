@@ -1,20 +1,50 @@
 {
-  "$schema": "https://pi.dev/schemas/settings.schema.json",
+  "defaultModel": "deepseek-v4-pro",
+  "defaultProvider": "deepseek",
+  "defaultThinkingLevel": "high",
   "lastChangelogVersion": "1.5.0",
-  "theme": "dark",
-  "defaultProvider": "explabs",
-  "defaultModel": "deepseek-v4.1-flash-1017",
-  "defaultThinkingLevel": "medium",
   "packages": [
-    "npm:pi-antigravity@0.11.0"
+    "npm:pi-working-message",
+    "npm:pi-rtk-rewrite",
+    "npm:pi-loopsmith",
+    "npm:@viartemev/pi-caveman",
+    "npm:pi-web-access",
+    "npm:pi-mcp-adapter",
+    "npm:pi-subagents",
+    "npm:context-mode",
+    "npm:pi-lens",
+    "npm:@gotgenes/pi-permission-system",
+    "npm:@juicesharp/rpiv-ask-user-question",
+    "npm:@juicesharp/rpiv-todo",
+    "npm:pi-hermes-memory",
+    "npm:@injaneity/pi-computer-use",
+    "npm:pi-annotate",
+    "npm:pi-antigravity"
+  ],
+  "theme": "dark",
+  "extensions": [
+    "-builtin:mcp"
   ],
   "enabledModels": [
-    "explabs/deepseek-v4.1-flash-1017",
-    "explabs/deepseek-v4.1-flash-uncensored",
-    "explabs/glm-5.3-flash",
-    "explabs/glm-5.3-flash-uncensored",
-    "explabs/glm-5.3-uncensored",
-    "explabs/kimi-k3",
-    "antigravity/gemini-3.8-flash"
-  ]
+    "antigravity/gemini-3.8-flash",
+    "antigravity/gemini-3.1-pro",
+    "antigravity/claude-sonnet-4-6",
+    "deepseek/deepseek-v4-pro",
+    "deepseek/deepseek-flash",
+    "experientiallabs/deepseek-v4.1-flash-1017",
+    "experientiallabs/muse-wonder-1.0",
+    "experientiallabs/glm-5.3-flash",
+    "experientiallabs/kimi-k3"
+  ],
+  "modelThinkingLevels": {
+    "antigravity/gemini-3.8-flash": "high"
+  },
+  "extensionChangelogVersions": {
+    "{\"source\":\"npm:pi-web-access\",\"scope\":\"user\"}": "0.47.0",
+    "{\"source\":\"npm:pi-mcp-adapter\",\"scope\":\"user\"}": "7.0.1",
+    "{\"source\":\"npm:pi-subagents\",\"scope\":\"user\"}": "0.84.0",
+    "{\"source\":\"npm:pi-lens\",\"scope\":\"user\"}": "4.4.8",
+    "{\"source\":\"npm:@gotgenes/pi-permission-system\",\"scope\":\"user\"}": "42.0.0",
+    "{\"source\":\"npm:pi-annotate\",\"scope\":\"user\"}": "0.5.2"
+  }
 }

@@ -1,10 +1,11 @@
 {
   "$schema": "https://pi.dev/schemas/models.schema.json",
   "providers": {
-    "explabs": {
+    "experientiallabs": {
+      "name": "Experiential Labs",
       "baseUrl": "https://api.experientiallabs.ai/v1",
       "api": "openai-completions",
-      "apiKey": "!cat ~/.pi/agent/secrets/explabs-api.key",
+      "apiKey": "!cat ~/.pi/agent/secrets/experientiallabs-api.key",
       "models": [
         {
           "id": "deepseek-v4.1-flash-1017",
@@ -14,56 +15,63 @@
             "text",
             "image"
           ],
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          },
           "contextWindow": 1048576,
           "maxTokens": 393216
         },
         {
-          "id": "deepseek-v4.1-flash-uncensored",
-          "name": "DeepSeek V4.1 Flash 1017 Uncensored",
+          "id": "muse-wonder-1.0",
+          "name": "Muse Wonder",
           "reasoning": true,
           "input": [
-            "text"
+            "text",
+            "image"
           ],
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          },
           "contextWindow": 1048576,
-          "maxTokens": 393216
-        },
-        {
-          "id": "glm-5.3-flash-uncensored",
-          "name": "GLM 5.3 Flash Uncensored",
-          "reasoning": true,
-          "input": [
-            "text"
-          ],
-          "contextWindow": 1048576,
-          "maxTokens": 131072
-        },
-        {
-          "id": "glm-5.3-uncensored",
-          "name": "GLM 5.3 Uncensored",
-          "reasoning": true,
-          "input": [
-            "text"
-          ],
-          "contextWindow": 1048576,
-          "maxTokens": 131072
+          "maxTokens": 1048576
         },
         {
           "id": "glm-5.3-flash",
-          "name": "GLM 5.3 Flash (Experiential)",
+          "name": "GLM-5.3 Flash",
           "reasoning": true,
           "input": [
-            "text"
+            "text",
+            "image"
           ],
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          },
           "contextWindow": 1048576,
           "maxTokens": 131072
         },
         {
           "id": "kimi-k3",
-          "name": "Kimi K3 (Experiential)",
+          "name": "Kimi K3",
           "reasoning": true,
           "input": [
-            "text"
+            "text",
+            "image"
           ],
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          },
           "contextWindow": 1048576,
           "maxTokens": 262144
         }
