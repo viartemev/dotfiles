@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-.PHONY: install link brew macos check doctor lock bootstrap
+.PHONY: install link brew macos check doctor lock bootstrap sync sync-status sync-check
 
 install:
 	./install.sh --brew
@@ -25,6 +25,15 @@ check:
 
 doctor:
 	./scripts/doctor.sh
+
+sync:
+	./scripts/agent-sync.sh sync
+
+sync-status:
+	./scripts/agent-sync.sh status
+
+sync-check:
+	./scripts/agent-sync.sh check
 
 lock:
 	./scripts/update-brew-lock.sh

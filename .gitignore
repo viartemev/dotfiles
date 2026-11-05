@@ -2,5 +2,10 @@
 .DS_Store
 Brewfile.work
 .config/zed/prompts/
-pi/mcp.json
-pi/secrets/
+agents/**/auth.json
+agents/**/.credentials*
+agents/**/mcp.json
+agents/**/secrets/
+agents/**/history.jsonl
+agents/**/*.sqlite*
+agents/**/*.db

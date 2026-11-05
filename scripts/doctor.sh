@@ -77,11 +77,30 @@ for file in settings.json keymap.json; do
   fi
 done
 
-printf '\n== pi ==\n'
+printf '\n== agents ==\n'
 PI_AGENT_DIR="${PI_CODING_AGENT_DIR:-$HOME/.pi/agent}"
-for file in settings.json models.json AGENTS.md; do
-  check_symlink "$PI_AGENT_DIR/$file" "$REPO_DIR/pi/$file"
-done
+if [[ -f "$REPO_DIR/agents/links.txt" ]]; then
+  while IFS= read -r entry; do
+    entry="${entry%%#*}"
+    entry="$(printf '%s' "$entry" | tr -d '[:space:]')"
+    [[ -n "$entry" ]] || continue
+    tool="${entry%%/*}"
+    rel="${entry#*/}"
+    case "$tool" in
+      pi) agent_dir="$PI_AGENT_DIR" ;;
+      claude) agent_dir="$HOME/.claude" ;;
+      codex) agent_dir="$HOME/.codex" ;;
+      bb) agent_dir="$HOME/.bb" ;;
+      *) warn "unknown agent tool in links.txt: $tool"; continue ;;
+    esac
+    if [[ ! -e "$REPO_DIR/agents/$entry" ]]; then
+      warn "agents/$entry is listed but not in the repo"
+      continue
+    fi
+    check_symlink "$agent_dir/$rel" "$REPO_DIR/agents/$entry"
+  done < "$REPO_DIR/agents/links.txt"
+fi
+
 if [[ -f "$PI_AGENT_DIR/mcp.json" ]]; then
   ok "$PI_AGENT_DIR/mcp.json exists (local)"
 else
@@ -96,6 +115,16 @@ if [[ -f "$PI_AGENT_DIR/auth.json" ]]; then
   ok "$PI_AGENT_DIR/auth.json exists (local)"
 else
   warn "$PI_AGENT_DIR/auth.json missing: run pi and log in to the OAuth providers"
+fi
+if [[ -x "$REPO_DIR/scripts/agent-sync.sh" ]]; then
+  "$REPO_DIR/scripts/agent-sync.sh" check >/dev/null 2>&1 && \
+    ok 'agent config free of credentials' || \
+    fail 'possible credentials in agents/'
+fi
+if [[ -L "$REPO_DIR/.git/hooks/pre-commit" ]]; then
+  ok 'pre-commit credential guard installed'
+else
+  warn 'pre-commit credential guard not installed (run ./install.sh)'
 fi
 
 printf '\n== local files ==\n'

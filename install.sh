@@ -99,24 +99,70 @@ symlink_path "$REPO_DIR/.config/mise/config.toml" "$HOME/.config/mise/config.tom
 symlink_path "$REPO_DIR/.config/zed" "$HOME/.config/zed"
 symlink_path "$REPO_DIR/.config/ghostty" "$HOME/.config/ghostty"
 
-# --- pi (coding agent) ---
-# Shared files are linked into the agent directory; per-machine files
-# (auth.json, sessions, mcp.json, secrets) stay local.
-PI_AGENT_DIR="${PI_CODING_AGENT_DIR:-$HOME/.pi/agent}"
+# --- agent configuration ---
+# Everything listed in agents/links.txt is symlinked into the tool's own
+# directory, so any setting changed by an agent is versioned here immediately.
+# Per-machine files (credentials, sessions, local MCP servers) are never linked.
+agent_dir_for() {
+  case "$1" in
+    pi) printf '%s' "${PI_CODING_AGENT_DIR:-$HOME/.pi/agent}" ;;
+    claude) printf '%s' "$HOME/.claude" ;;
+    codex) printf '%s' "$HOME/.codex" ;;
+    bb) printf '%s' "$HOME/.bb" ;;
+    *) return 1 ;;
+  esac
+}
+
+PI_AGENT_DIR="$(agent_dir_for pi)"
 mkdir -p "$PI_AGENT_DIR/secrets"
 chmod 700 "$PI_AGENT_DIR/secrets"
-for file in settings.json models.json AGENTS.md; do
-  symlink_path "$REPO_DIR/pi/$file" "$PI_AGENT_DIR/$file"
-done
+
+if [[ -f "$REPO_DIR/agents/links.txt" ]]; then
+  while IFS= read -r entry; do
+    entry="${entry%%#*}"
+    entry="$(printf '%s' "$entry" | tr -d '[:space:]')"
+    [[ -n "$entry" ]] || continue
+
+    tool="${entry%%/*}"
+    rel="${entry#*/}"
+    source_path="$REPO_DIR/agents/$entry"
+
+    if ! target_dir="$(agent_dir_for "$tool")"; then
+      warn "agents/links.txt: unknown tool '$tool'"
+      continue
+    fi
+    if [[ ! -e "$source_path" ]]; then
+      warn "agents/$entry is listed but not in the repo, skipping"
+      continue
+    fi
+
+    mkdir -p "$target_dir"
+    symlink_path "$source_path" "$target_dir/$rel"
+  done < "$REPO_DIR/agents/links.txt"
+fi
 
 if [[ ! -f "$PI_AGENT_DIR/mcp.json" ]]; then
-  cp "$REPO_DIR/pi/mcp.json.example" "$PI_AGENT_DIR/mcp.json"
+  cp "$REPO_DIR/agents/pi/mcp.json.example" "$PI_AGENT_DIR/mcp.json"
   log 'created mcp.json from example (review the server URLs)'
 fi
 
 if [[ ! -f "$PI_AGENT_DIR/secrets/explabs-api.key" ]]; then
   install -m 600 /dev/null "$PI_AGENT_DIR/secrets/explabs-api.key"
   warn "put the Experiential Labs API key into $PI_AGENT_DIR/secrets/explabs-api.key"
+fi
+
+# Block commits that would publish a credential from agents/.
+if [[ -d "$REPO_DIR/.git/hooks" ]]; then
+  hook_source="$REPO_DIR/scripts/git-hooks/pre-commit"
+  hook_target="$REPO_DIR/.git/hooks/pre-commit"
+  if [[ -x "$hook_source" || -f "$hook_source" ]]; then
+    chmod +x "$hook_source"
+    if [[ -e "$hook_target" && ! -L "$hook_target" ]]; then
+      backup_path "$hook_target"
+    fi
+    ln -snf "$hook_source" "$hook_target"
+    log 'linked git pre-commit hook (agent credential check)'
+  fi
 fi
 
 if [[ ! -f "$HOME/.zshrc.local" ]]; then

@@ -34,11 +34,22 @@
 - Go: gopls + Delve (`go install golang.org/x/tools/gopls@latest github.com/go-delve/delve/cmd/dlv@latest`), inlay hints в стиле GoLand, `code_lens` для тестов
 - оба файла симлинкаются из репозитория; при переносе на другую машину ничего не нужно править вручную
 
-### pi (coding agent)
-- `~/.pi/agent/{settings.json,models.json,AGENTS.md}` — симлинки на `pi/` из репозитория: модели, включённые провайдеры, инструкции для агента
-- ключ в `models.json` не хранится в репозитории: провайдер ссылается на `~/.pi/agent/secrets/<provider>-api.key` (`apiKey` с `!cat ...`), сам файл вне git
-- машинно-специфичное остаётся локальным: `auth.json` (OAuth), `mcp.json` (внутренние URL, шаблон — `pi/mcp.json.example`), `sessions/`, `secrets/`
-- `scripts/pi-capture.sh` снимает текущий конфиг машины в репозиторий (вынося литеральные ключи в `secrets/`) — так конфиг с другой машины можно залить веткой и смержить
+### Конфиги агентов (pi, claude, codex, bb)
+- всё, что перечислено в `agents/links.txt`, симлинкается в каталог инструмента: `~/.pi/agent`, `~/.claude`, `~/.codex`, `~/.bb`
+- значит любая правка файла (своя или агентом) сразу лежит в репозитории, git видит её без отдельных шагов
+- каталоги линкуются целиком: `pi/skills`, `pi/prompts`, `pi/themes`, `pi/extensions`, `claude/commands`, `claude/agents`, `codex/prompts` — новый файл внутри появляется в git сам
+- общий `AGENTS.md` для pi, codex и bb — отдельными файлами (у каждого инструмента свой формат и свои правила)
+- машинно-специфичное остаётся локальным: `auth.json`, `.credentials.json`, `mcp.json` (шаблон — `agents/pi/mcp.json.example`), `secrets/`, `sessions/`, `plugins/`, `codex/config.toml` (в нём абсолютные trust-пути)
+- ключ Experiential Labs не в репозитории: в `models.json` стоит `"apiKey": "!cat ~/.pi/agent/secrets/explabs-api.key"`
+- `scripts/agent-sync.sh` — `status` (что слинковано/разъехалось), `capture` (затащить правки в репо), `sync` (capture + commit + rebase-pull + push), `check` (поиск креденшелов), `add` (начать шарить новый путь)
+- `scripts/git-hooks/pre-commit` блокирует коммит, если в `agents/` попал токен (`xpl_`, `sk-`, `ghp_`, JWT, приватный ключ и т.п.)
+
+Сценарий на второй машине:
+
+```bash
+cd ~/dotfiles && git pull && ./install.sh   # линкует всё, старое кладёт в *.backup-<дата>
+# дальше: любая правка конфига -> ./scripts/agent-sync.sh sync
+```
 
 ### Bootstrap
 - `Brewfile` для установки основного toolchain
@@ -77,12 +88,15 @@ Brewfile
 Brewfile.lock.json
 Makefile
 install.sh
-pi/
-  settings.json
-  models.json
-  AGENTS.md
-  mcp.json.example
+agents/
+  links.txt
+  pi/{settings.json,models.json,AGENTS.md,mcp.json.example,skills,prompts,themes,extensions}
+  claude/{settings.json,CLAUDE.md,commands,agents}
+  codex/{AGENTS.md,prompts}
+  bb/AGENTS.md
 scripts/
+  agent-sync.sh
+  git-hooks/pre-commit
   doctor.sh
   macos-defaults.sh
   pi-capture.sh
@@ -115,7 +129,8 @@ make install
 Скрипт:
 - установит зависимости из `Brewfile`
 - сделает backup существующих файлов
-- создаст symlink'и на `.zshrc`, `.tmux.conf`, `.gitconfig`, `~/.config/zsh`, `starship.toml`, `~/.config/git/ignore`, `~/.config/zed/{settings,keymap}.json`, `~/.pi/agent/{settings.json,models.json,AGENTS.md}`
+- создаст symlink'и на `.zshrc`, `.tmux.conf`, `.gitconfig`, `~/.config/zsh`, `starship.toml`, `~/.config/git/ignore`, `~/.config/zed/{settings,keymap}.json`
+- слинкует конфиги агентов из `agents/` согласно `agents/links.txt` и поставит git pre-commit хук против утечки токенов
 - создаст `~/.zshrc.local` и `~/.gitconfig.local`, если их ещё нет
 - создаст `~/.pi/agent/mcp.json` из шаблона и пустой `~/.pi/agent/secrets/explabs-api.key` (ключ вписать вручную)
 

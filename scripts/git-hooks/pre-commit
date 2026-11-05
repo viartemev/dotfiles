@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Refuse to commit credentials into the shared agent configuration.
+# Installed by install.sh as .git/hooks/pre-commit.
+set -euo pipefail
+
+REPO_DIR="$(git rev-parse --show-toplevel 2>/dev/null || true)"
+[[ -n "$REPO_DIR" ]] || exit 0
+
+SYNC="$REPO_DIR/scripts/agent-sync.sh"
+[[ -x "$SYNC" ]] || exit 0
+
+# Only guard commits that touch the shared agent config.
+if ! git diff --cached --name-only | grep -q '^agents/'; then
+  exit 0
+fi
+
+exec "$SYNC" check --staged

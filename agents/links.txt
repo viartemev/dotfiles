@@ -1,0 +1,44 @@
+# Shared agent configuration
+#
+# Every path listed in links.txt is symlinked from this repository into the
+# agent's own directory, so an edit made by an agent or by hand is immediately
+# versioned here. New files inside a linked directory (skills, prompts, themes)
+# are tracked without touching this file.
+#
+# Tools and their target directories:
+#   pi      -> ~/.pi/agent            (override with PI_CODING_AGENT_DIR)
+#   claude  -> ~/.claude
+#   codex   -> ~/.codex
+#   bb      -> ~/.bb
+#
+# Per-machine files stay local and must NOT be added here:
+#   pi/auth.json, pi/mcp.json, pi/secrets/, pi/sessions/, pi/npm/, pi/certs/
+#   claude/.credentials.json, claude/settings.local.json, claude/projects/,
+#   claude/sessions/, claude/history.jsonl, claude/plugins/, claude/skills/
+#   codex/auth.json, codex/sessions/, codex/history.jsonl, codex/log/,
+#   codex/models_cache.json, codex/config.toml (trust paths differ per machine)
+#   bb/auth.json, bb/auth-secret, bb/bb.db, bb/plugins/, bb/logs/
+#
+# Layout: <tool>/<path relative to the tool directory>. Directories are
+# detected automatically, files and directories both work.
+
+pi/settings.json
+pi/models.json
+pi/AGENTS.md
+pi/keybindings.json
+pi/prompts
+pi/skills
+pi/themes
+pi/extensions
+pi/SYSTEM.md
+pi/APPEND_SYSTEM.md
+
+claude/settings.json
+claude/CLAUDE.md
+claude/commands
+claude/agents
+
+codex/AGENTS.md
+codex/prompts
+
+bb/AGENTS.md
