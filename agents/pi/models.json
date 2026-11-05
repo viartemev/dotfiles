@@ -25,21 +25,14 @@
           "maxTokens": 393216
         },
         {
-          "id": "muse-wonder-1.0",
-          "name": "Muse Wonder",
+          "id": "deepseek-v4.1-flash-uncensored",
+          "name": "DeepSeek V4.1 Flash 1017 Uncensored",
           "reasoning": true,
           "input": [
-            "text",
-            "image"
+            "text"
           ],
-          "cost": {
-            "input": 0,
-            "output": 0,
-            "cacheRead": 0,
-            "cacheWrite": 0
-          },
           "contextWindow": 1048576,
-          "maxTokens": 1048576
+          "maxTokens": 393216
         },
         {
           "id": "glm-5.3-flash",
@@ -59,6 +52,26 @@
           "maxTokens": 131072
         },
         {
+          "id": "glm-5.3-flash-uncensored",
+          "name": "GLM 5.3 Flash Uncensored",
+          "reasoning": true,
+          "input": [
+            "text"
+          ],
+          "contextWindow": 1048576,
+          "maxTokens": 131072
+        },
+        {
+          "id": "glm-5.3-uncensored",
+          "name": "GLM 5.3 Uncensored",
+          "reasoning": true,
+          "input": [
+            "text"
+          ],
+          "contextWindow": 1048576,
+          "maxTokens": 131072
+        },
+        {
           "id": "kimi-k3",
           "name": "Kimi K3",
           "reasoning": true,
@@ -74,6 +87,23 @@
           },
           "contextWindow": 1048576,
           "maxTokens": 262144
+        },
+        {
+          "id": "muse-wonder-1.0",
+          "name": "Muse Wonder",
+          "reasoning": true,
+          "input": [
+            "text",
+            "image"
+          ],
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          },
+          "contextWindow": 1048576,
+          "maxTokens": 1048576
         }
       ]
     }

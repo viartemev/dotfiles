@@ -26,15 +26,18 @@
     "-builtin:mcp"
   ],
   "enabledModels": [
+    "experientiallabs/deepseek-v4.1-flash-1017",
+    "experientiallabs/deepseek-v4.1-flash-uncensored",
+    "experientiallabs/glm-5.3-flash",
+    "experientiallabs/glm-5.3-flash-uncensored",
+    "experientiallabs/glm-5.3-uncensored",
+    "experientiallabs/kimi-k3",
     "antigravity/gemini-3.8-flash",
     "antigravity/gemini-3.1-pro",
     "antigravity/claude-sonnet-4-6",
     "deepseek/deepseek-v4-pro",
     "deepseek/deepseek-flash",
-    "experientiallabs/deepseek-v4.1-flash-1017",
-    "experientiallabs/muse-wonder-1.0",
-    "experientiallabs/glm-5.3-flash",
-    "experientiallabs/kimi-k3"
+    "experientiallabs/muse-wonder-1.0"
   ],
   "modelThinkingLevels": {
     "antigravity/gemini-3.8-flash": "high"
