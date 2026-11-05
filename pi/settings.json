@@ -1,0 +1,20 @@
+{
+  "$schema": "https://pi.dev/schemas/settings.schema.json",
+  "lastChangelogVersion": "1.5.0",
+  "theme": "dark",
+  "defaultProvider": "explabs",
+  "defaultModel": "deepseek-v4.1-flash-1017",
+  "defaultThinkingLevel": "medium",
+  "packages": [
+    "npm:pi-antigravity@0.11.0"
+  ],
+  "enabledModels": [
+    "explabs/deepseek-v4.1-flash-1017",
+    "explabs/deepseek-v4.1-flash-uncensored",
+    "explabs/glm-5.3-flash",
+    "explabs/glm-5.3-flash-uncensored",
+    "explabs/glm-5.3-uncensored",
+    "explabs/kimi-k3",
+    "antigravity/gemini-3.8-flash"
+  ]
+}

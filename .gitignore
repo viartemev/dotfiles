@@ -2,3 +2,5 @@
 .DS_Store
 Brewfile.work
 .config/zed/prompts/
+pi/mcp.json
+pi/secrets/

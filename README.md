@@ -34,6 +34,12 @@
 - Go: gopls + Delve (`go install golang.org/x/tools/gopls@latest github.com/go-delve/delve/cmd/dlv@latest`), inlay hints в стиле GoLand, `code_lens` для тестов
 - оба файла симлинкаются из репозитория; при переносе на другую машину ничего не нужно править вручную
 
+### pi (coding agent)
+- `~/.pi/agent/{settings.json,models.json,AGENTS.md}` — симлинки на `pi/` из репозитория: модели, включённые провайдеры, инструкции для агента
+- ключ в `models.json` не хранится в репозитории: провайдер ссылается на `~/.pi/agent/secrets/<provider>-api.key` (`apiKey` с `!cat ...`), сам файл вне git
+- машинно-специфичное остаётся локальным: `auth.json` (OAuth), `mcp.json` (внутренние URL, шаблон — `pi/mcp.json.example`), `sessions/`, `secrets/`
+- `scripts/pi-capture.sh` снимает текущий конфиг машины в репозиторий (вынося литеральные ключи в `secrets/`) — так конфиг с другой машины можно залить веткой и смержить
+
 ### Bootstrap
 - `Brewfile` для установки основного toolchain
 - `install.sh` для symlink'ов и локальных шаблонов
@@ -71,9 +77,15 @@ Brewfile
 Brewfile.lock.json
 Makefile
 install.sh
+pi/
+  settings.json
+  models.json
+  AGENTS.md
+  mcp.json.example
 scripts/
   doctor.sh
   macos-defaults.sh
+  pi-capture.sh
   update-brew-lock.sh
 ```
 
@@ -103,8 +115,9 @@ make install
 Скрипт:
 - установит зависимости из `Brewfile`
 - сделает backup существующих файлов
-- создаст symlink'и на `.zshrc`, `.tmux.conf`, `.gitconfig`, `~/.config/zsh`, `starship.toml`, `~/.config/git/ignore`, `~/.config/zed/{settings,keymap}.json`
+- создаст symlink'и на `.zshrc`, `.tmux.conf`, `.gitconfig`, `~/.config/zsh`, `starship.toml`, `~/.config/git/ignore`, `~/.config/zed/{settings,keymap}.json`, `~/.pi/agent/{settings.json,models.json,AGENTS.md}`
 - создаст `~/.zshrc.local` и `~/.gitconfig.local`, если их ещё нет
+- создаст `~/.pi/agent/mcp.json` из шаблона и пустой `~/.pi/agent/secrets/explabs-api.key` (ключ вписать вручную)
 
 ### 3. Заполнить приватные Git-настройки
 

@@ -99,6 +99,26 @@ symlink_path "$REPO_DIR/.config/mise/config.toml" "$HOME/.config/mise/config.tom
 symlink_path "$REPO_DIR/.config/zed" "$HOME/.config/zed"
 symlink_path "$REPO_DIR/.config/ghostty" "$HOME/.config/ghostty"
 
+# --- pi (coding agent) ---
+# Shared files are linked into the agent directory; per-machine files
+# (auth.json, sessions, mcp.json, secrets) stay local.
+PI_AGENT_DIR="${PI_CODING_AGENT_DIR:-$HOME/.pi/agent}"
+mkdir -p "$PI_AGENT_DIR/secrets"
+chmod 700 "$PI_AGENT_DIR/secrets"
+for file in settings.json models.json AGENTS.md; do
+  symlink_path "$REPO_DIR/pi/$file" "$PI_AGENT_DIR/$file"
+done
+
+if [[ ! -f "$PI_AGENT_DIR/mcp.json" ]]; then
+  cp "$REPO_DIR/pi/mcp.json.example" "$PI_AGENT_DIR/mcp.json"
+  log 'created mcp.json from example (review the server URLs)'
+fi
+
+if [[ ! -f "$PI_AGENT_DIR/secrets/explabs-api.key" ]]; then
+  install -m 600 /dev/null "$PI_AGENT_DIR/secrets/explabs-api.key"
+  warn "put the Experiential Labs API key into $PI_AGENT_DIR/secrets/explabs-api.key"
+fi
+
 if [[ ! -f "$HOME/.zshrc.local" ]]; then
   cp "$REPO_DIR/.zshrc.local.example" "$HOME/.zshrc.local"
   log 'created ~/.zshrc.local from example'
@@ -123,3 +143,4 @@ printf '  5) for project envs: direnv allow\n'
 printf '  6) optional: make macos\n'
 printf '  7) run ./scripts/doctor.sh to verify setup\n'
 printf '  8) optional Go tooling for Zed: go install golang.org/x/tools/gopls@latest github.com/go-delve/delve/cmd/dlv@latest\n'
+printf '  9) pi: fill %s/secrets/explabs-api.key, then sign in to the antigravity package if needed\n' "$PI_AGENT_DIR"

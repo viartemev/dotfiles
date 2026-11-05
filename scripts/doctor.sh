@@ -77,6 +77,27 @@ for file in settings.json keymap.json; do
   fi
 done
 
+printf '\n== pi ==\n'
+PI_AGENT_DIR="${PI_CODING_AGENT_DIR:-$HOME/.pi/agent}"
+for file in settings.json models.json AGENTS.md; do
+  check_symlink "$PI_AGENT_DIR/$file" "$REPO_DIR/pi/$file"
+done
+if [[ -f "$PI_AGENT_DIR/mcp.json" ]]; then
+  ok "$PI_AGENT_DIR/mcp.json exists (local)"
+else
+  warn "$PI_AGENT_DIR/mcp.json missing"
+fi
+if [[ -s "$PI_AGENT_DIR/secrets/explabs-api.key" ]]; then
+  ok "$PI_AGENT_DIR/secrets/explabs-api.key has content"
+else
+  warn "$PI_AGENT_DIR/secrets/explabs-api.key missing or empty"
+fi
+if [[ -f "$PI_AGENT_DIR/auth.json" ]]; then
+  ok "$PI_AGENT_DIR/auth.json exists (local)"
+else
+  warn "$PI_AGENT_DIR/auth.json missing: run pi and log in to the OAuth providers"
+fi
+
 printf '\n== local files ==\n'
 if [[ -f "$HOME/.zshrc.local" ]]; then
   ok '~/.zshrc.local exists'
